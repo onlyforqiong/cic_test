@@ -1,2 +1,2 @@
 # cic_test
-## yyy digtal test project
+## yyy digital test project
