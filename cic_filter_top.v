@@ -13,6 +13,7 @@ module cic_filter_top(
   reg [31:0] _RAND_4;
   reg [31:0] _RAND_5;
   reg [31:0] _RAND_6;
+  reg [31:0] _RAND_7;
 `endif // RANDOMIZE_REG_INIT
   wire  _T_2 = ~reset_n; // @[cic_filter.scala 24:45]
   reg [5:0] counter_a; // @[Counter.scala 62:40]
@@ -27,9 +28,10 @@ module cic_filter_top(
   reg [18:0] sub_0; // @[cic_filter.scala 45:42]
   reg [18:0] sub_1; // @[cic_filter.scala 45:42]
   reg [18:0] sub_2; // @[cic_filter.scala 45:42]
-  wire [18:0] sub_next_0 = sum_out - sub_0; // @[cic_filter.scala 49:48]
-  wire [18:0] sub_next_1 = sub_next_0 - sub_1; // @[cic_filter.scala 52:60]
-  assign data_out = sub_next_1 - sub_2; // @[cic_filter.scala 52:60]
+  reg [18:0] sub_out; // @[cic_filter.scala 46:34]
+  wire [18:0] sub_next_0 = sum_out - sub_0; // @[cic_filter.scala 50:48]
+  wire [18:0] sub_next_1 = sub_next_0 - sub_1; // @[cic_filter.scala 53:60]
+  assign data_out = sub_out; // @[cic_filter.scala 58:22]
   always @(posedge clk or posedge _T_2) begin
     if (_T_2) begin // @[Counter.scala 120:16]
       counter_a <= 6'h0; // @[Counter.scala 78:15 88:{20,28}]
@@ -70,17 +72,24 @@ module cic_filter_top(
     end
   end
   always @(posedge _T_3 or posedge _T_2) begin
-    if (_T_2) begin // @[cic_filter.scala 49:48]
+    if (_T_2) begin // @[cic_filter.scala 50:48]
       sub_1 <= 19'h0;
     end else begin
       sub_1 <= sum_out - sub_0;
     end
   end
   always @(posedge _T_3 or posedge _T_2) begin
-    if (_T_2) begin // @[cic_filter.scala 52:60]
+    if (_T_2) begin // @[cic_filter.scala 53:60]
       sub_2 <= 19'h0;
     end else begin
       sub_2 <= sub_next_0 - sub_1;
+    end
+  end
+  always @(posedge _T_3 or posedge _T_2) begin
+    if (_T_2) begin // @[cic_filter.scala 53:60]
+      sub_out <= 19'h0;
+    end else begin
+      sub_out <= sub_next_1 - sub_2;
     end
   end
 // Register and memory initialization
@@ -133,6 +142,8 @@ initial begin
   sub_1 = _RAND_5[18:0];
   _RAND_6 = {1{`RANDOM}};
   sub_2 = _RAND_6[18:0];
+  _RAND_7 = {1{`RANDOM}};
+  sub_out = _RAND_7[18:0];
 `endif // RANDOMIZE_REG_INIT
   if (_T_2) begin
     counter_a = 6'h0;
@@ -154,6 +165,9 @@ initial begin
   end
   if (_T_2) begin
     sub_2 = 19'h0;
+  end
+  if (_T_2) begin
+    sub_out = 19'h0;
   end
   `endif // RANDOMIZE
 end // initial
