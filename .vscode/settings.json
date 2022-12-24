@@ -1,7 +1,0 @@
-{
-    "files.watcherExclude": {
-        "**/target": true
-    },
-    "commentTranslate.targetLanguage": "zh-CN",
-    "commentTranslate.hover.enabled": true
-}
