@@ -29,10 +29,10 @@ module cic_filter_top(
   reg [18:0] sub_1; // @[cic_filter.scala 45:38]
   reg [18:0] sub_2; // @[cic_filter.scala 45:38]
   reg [18:0] sub_out; // @[cic_filter.scala 46:30]
-  wire [18:0] sub_next_0 = sum_out - sub_0; // @[cic_filter.scala 50:44]
-  wire [18:0] sub_next_1 = sub_next_0 - sub_1; // @[cic_filter.scala 53:56]
-  wire [18:0] sub_next_2 = sub_next_1 - sub_2; // @[cic_filter.scala 53:56]
-  assign data_out = sub_out; // @[cic_filter.scala 57:18]
+  wire [18:0] sub_next_0 = sum_out - sub_0; // @[cic_filter.scala 49:44]
+  wire [18:0] sub_next_1 = sub_next_0 - sub_1; // @[cic_filter.scala 52:56]
+  wire [18:0] sub_next_2 = sub_next_1 - sub_2; // @[cic_filter.scala 52:56]
+  assign data_out = sub_out; // @[cic_filter.scala 56:18]
   always @(posedge clk or posedge _T_2) begin
     if (_T_2) begin // @[Counter.scala 120:16]
       counter_a <= 6'h0; // @[Counter.scala 78:15]
@@ -62,28 +62,28 @@ module cic_filter_top(
     end
   end
   always @(posedge clk or posedge _T_2) begin
-    if (_T_2) begin // @[cic_filter.scala 40:34]
+    if (_T_2) begin // @[cic_filter.scala 50:34]
       sub_0 <= 19'h0;
-    end else begin
-      sub_0 <= sum_2 + sum_1;
+    end else if (counter_b) begin
+      sub_0 <= sum_out;
     end
   end
   always @(posedge clk or posedge _T_2) begin
-    if (_T_2) begin // @[cic_filter.scala 50:44]
+    if (_T_2) begin // @[cic_filter.scala 53:34]
       sub_1 <= 19'h0;
-    end else begin
-      sub_1 <= sum_out - sub_0;
+    end else if (counter_b) begin
+      sub_1 <= sub_next_0;
     end
   end
   always @(posedge clk or posedge _T_2) begin
-    if (_T_2) begin // @[cic_filter.scala 53:56]
+    if (_T_2) begin // @[cic_filter.scala 53:34]
       sub_2 <= 19'h0;
-    end else begin
-      sub_2 <= sub_next_0 - sub_1;
+    end else if (counter_b) begin
+      sub_2 <= sub_next_1;
     end
   end
   always @(posedge clk or posedge _T_2) begin
-    if (_T_2) begin // @[cic_filter.scala 58:23]
+    if (_T_2) begin // @[cic_filter.scala 57:23]
       sub_out <= 19'h0;
     end else if (counter_b) begin
       sub_out <= sub_next_2;

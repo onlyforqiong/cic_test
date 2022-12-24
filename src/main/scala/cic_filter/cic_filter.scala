@@ -45,13 +45,12 @@ class cic_filter_top(Bin:Int,N:Int, R:Int,M:Int ) extends RawModule    {
         val sub = Seq.fill(N)(RegInit(0.U(Bout.W)))
         val sub_out = RegInit(0.U(Bout.W))
         sub.zipWithIndex.foreach{case(a,index) =>
-            
             if(index == 0 ) {
                 sub_next(index) := sum_out - sub(index)
-                sub(index) := sum_out 
+                sub(index) := Mux(counter_b, sum_out,sub(index) ) 
             }else{
                 sub_next(index) := sub_next(index - 1) - sub(index)
-                sub(index) := sub_next(index - 1)
+                sub(index) := Mux(counter_b,sub_next(index - 1),sub(index))
             }
         }
         data_out := sub_out
