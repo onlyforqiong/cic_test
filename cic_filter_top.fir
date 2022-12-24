@@ -14,12 +14,10 @@ circuit cic_filter_top :
     wire counter_b : UInt<1>
     counter_b <= UInt<1>("h0")
     when data_en : @[Counter.scala 120:16]
-      node wrap_wrap = eq(counter_a, UInt<6>("h3e")) @[Counter.scala 74:24]
+      node wrap_wrap = eq(counter_a, UInt<6>("h3f")) @[Counter.scala 74:24]
       node _wrap_value_T = add(counter_a, UInt<1>("h1")) @[Counter.scala 78:24]
       node _wrap_value_T_1 = tail(_wrap_value_T, 1) @[Counter.scala 78:24]
       counter_a <= _wrap_value_T_1 @[Counter.scala 78:15]
-      when wrap_wrap : @[Counter.scala 88:20]
-        counter_a <= UInt<1>("h0") @[Counter.scala 88:28]
       counter_b <= wrap_wrap @[Counter.scala 120:23]
     reg sum_0 : UInt<19>, _T with :
       reset => (_T_2, UInt<19>("h0")) @[cic_filter.scala 29:38]
@@ -38,30 +36,28 @@ circuit cic_filter_top :
     sum_2 <= _sum_2_T_1 @[cic_filter.scala 37:28]
     node _sum_out_T = add(sum_2, sum_1) @[cic_filter.scala 40:34]
     node sum_out = tail(_sum_out_T, 1) @[cic_filter.scala 40:34]
-    node _T_3 = asClock(counter_b) @[cic_filter.scala 43:37]
-    node _T_4 = not(reset_n) @[cic_filter.scala 43:46]
-    node _T_5 = asAsyncReset(_T_4) @[cic_filter.scala 43:55]
-    wire sub_next : UInt<19>[3] @[cic_filter.scala 44:32]
-    reg sub_0 : UInt<19>, _T_3 with :
-      reset => (_T_5, UInt<19>("h0")) @[cic_filter.scala 45:42]
-    reg sub_1 : UInt<19>, _T_3 with :
-      reset => (_T_5, UInt<19>("h0")) @[cic_filter.scala 45:42]
-    reg sub_2 : UInt<19>, _T_3 with :
-      reset => (_T_5, UInt<19>("h0")) @[cic_filter.scala 45:42]
-    reg sub_out : UInt<19>, _T_3 with :
-      reset => (_T_5, UInt<19>("h0")) @[cic_filter.scala 46:34]
-    node _sub_next_0_T = sub(sum_out, sub_0) @[cic_filter.scala 50:48]
-    node _sub_next_0_T_1 = tail(_sub_next_0_T, 1) @[cic_filter.scala 50:48]
-    sub_next[0] <= _sub_next_0_T_1 @[cic_filter.scala 50:37]
-    sub_0 <= sum_out @[cic_filter.scala 51:32]
-    node _sub_next_1_T = sub(sub_next[0], sub_1) @[cic_filter.scala 53:60]
-    node _sub_next_1_T_1 = tail(_sub_next_1_T, 1) @[cic_filter.scala 53:60]
-    sub_next[1] <= _sub_next_1_T_1 @[cic_filter.scala 53:37]
-    sub_1 <= sub_next[0] @[cic_filter.scala 54:32]
-    node _sub_next_2_T = sub(sub_next[1], sub_2) @[cic_filter.scala 53:60]
-    node _sub_next_2_T_1 = tail(_sub_next_2_T, 1) @[cic_filter.scala 53:60]
-    sub_next[2] <= _sub_next_2_T_1 @[cic_filter.scala 53:37]
-    sub_2 <= sub_next[1] @[cic_filter.scala 54:32]
-    sub_out <= sub_next[2] @[cic_filter.scala 57:21]
-    data_out <= sub_out @[cic_filter.scala 58:22]
+    wire sub_next : UInt<19>[3] @[cic_filter.scala 44:28]
+    reg sub_0 : UInt<19>, _T with :
+      reset => (_T_2, UInt<19>("h0")) @[cic_filter.scala 45:38]
+    reg sub_1 : UInt<19>, _T with :
+      reset => (_T_2, UInt<19>("h0")) @[cic_filter.scala 45:38]
+    reg sub_2 : UInt<19>, _T with :
+      reset => (_T_2, UInt<19>("h0")) @[cic_filter.scala 45:38]
+    reg sub_out : UInt<19>, _T with :
+      reset => (_T_2, UInt<19>("h0")) @[cic_filter.scala 46:30]
+    node _sub_next_0_T = sub(sum_out, sub_0) @[cic_filter.scala 50:44]
+    node _sub_next_0_T_1 = tail(_sub_next_0_T, 1) @[cic_filter.scala 50:44]
+    sub_next[0] <= _sub_next_0_T_1 @[cic_filter.scala 50:33]
+    sub_0 <= sum_out @[cic_filter.scala 51:28]
+    node _sub_next_1_T = sub(sub_next[0], sub_1) @[cic_filter.scala 53:56]
+    node _sub_next_1_T_1 = tail(_sub_next_1_T, 1) @[cic_filter.scala 53:56]
+    sub_next[1] <= _sub_next_1_T_1 @[cic_filter.scala 53:33]
+    sub_1 <= sub_next[0] @[cic_filter.scala 54:28]
+    node _sub_next_2_T = sub(sub_next[1], sub_2) @[cic_filter.scala 53:56]
+    node _sub_next_2_T_1 = tail(_sub_next_2_T, 1) @[cic_filter.scala 53:56]
+    sub_next[2] <= _sub_next_2_T_1 @[cic_filter.scala 53:33]
+    sub_2 <= sub_next[1] @[cic_filter.scala 54:28]
+    data_out <= sub_out @[cic_filter.scala 57:18]
+    node _sub_out_T = mux(counter_b, sub_next[2], sub_out) @[cic_filter.scala 58:23]
+    sub_out <= _sub_out_T @[cic_filter.scala 58:17]
 

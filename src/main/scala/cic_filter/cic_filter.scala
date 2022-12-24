@@ -24,7 +24,7 @@ class cic_filter_top(Bin:Int,N:Int, R:Int,M:Int ) extends RawModule    {
     withClockAndReset(clk.asClock,(~resetn).asAsyncReset) {
 
         // val 
-        val (counter_a,counter_b) = Counter(data_en,(R - 1))
+        val (counter_a,counter_b) = Counter(data_en,(R ))
         // 积分器部分
         val sum = Seq.fill(N)(RegInit(0.U(Bout.W)))
         // val sum_next = Wire(Vec(N,UInt(Bout.W)))
@@ -40,23 +40,23 @@ class cic_filter_top(Bin:Int,N:Int, R:Int,M:Int ) extends RawModule    {
         val sum_out = sum(N - 1) + sum(N - 2)
         
         //梳状滤波器
-        withClockAndReset(counter_b.asClock,(~resetn).asAsyncReset) {
-            val sub_next = Wire(Vec(N,UInt(Bout.W)))
-            val sub = Seq.fill(N)(RegInit(0.U(Bout.W)))
-            val sub_out = RegInit(0.U(Bout.W))
-            sub.zipWithIndex.foreach{case(a,index) =>
-                
-                if(index == 0 ) {
-                    sub_next(index) := sum_out - sub(index)
-                    sub(index) := sum_out 
-                }else{
-                    sub_next(index) := sub_next(index - 1) - sub(index)
-                    sub(index) := sub_next(index - 1)
-                }
+        // withClockAndReset(counter_b.asClock,(~resetn).asAsyncReset) {
+        val sub_next = Wire(Vec(N,UInt(Bout.W)))
+        val sub = Seq.fill(N)(RegInit(0.U(Bout.W)))
+        val sub_out = RegInit(0.U(Bout.W))
+        sub.zipWithIndex.foreach{case(a,index) =>
+            
+            if(index == 0 ) {
+                sub_next(index) := sum_out - sub(index)
+                sub(index) := sum_out 
+            }else{
+                sub_next(index) := sub_next(index - 1) - sub(index)
+                sub(index) := sub_next(index - 1)
             }
-            sub_out := sub_next(N - 1)
-            data_out := sub_out
         }
+        data_out := sub_out
+        sub_out := Mux(counter_b,sub_next(N - 1),sub_out)
+        // }
        
         // e 
     // matrix_output := Matrix_Mul(matrix_input,matrix_const)

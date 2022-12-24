@@ -17,37 +17,34 @@ module cic_filter_top(
 `endif // RANDOMIZE_REG_INIT
   wire  _T_2 = ~reset_n; // @[cic_filter.scala 24:45]
   reg [5:0] counter_a; // @[Counter.scala 62:40]
-  wire  wrap_wrap = counter_a == 6'h3e; // @[Counter.scala 74:24]
+  wire  wrap_wrap = counter_a == 6'h3f; // @[Counter.scala 74:24]
   wire [5:0] _wrap_value_T_1 = counter_a + 6'h1; // @[Counter.scala 78:24]
+  wire  counter_b = data_en & wrap_wrap; // @[Counter.scala 120:{16,23}]
   reg [18:0] sum_0; // @[cic_filter.scala 29:38]
   reg [18:0] sum_1; // @[cic_filter.scala 29:38]
   reg [18:0] sum_2; // @[cic_filter.scala 29:38]
-  wire [18:0] _GEN_3 = {{18'd0}, data_in}; // @[cic_filter.scala 35:42]
+  wire [18:0] _GEN_2 = {{18'd0}, data_in}; // @[cic_filter.scala 35:42]
   wire [18:0] sum_out = sum_2 + sum_1; // @[cic_filter.scala 40:34]
-  wire  _T_3 = data_en & wrap_wrap; // @[cic_filter.scala 43:37]
-  reg [18:0] sub_0; // @[cic_filter.scala 45:42]
-  reg [18:0] sub_1; // @[cic_filter.scala 45:42]
-  reg [18:0] sub_2; // @[cic_filter.scala 45:42]
-  reg [18:0] sub_out; // @[cic_filter.scala 46:34]
-  wire [18:0] sub_next_0 = sum_out - sub_0; // @[cic_filter.scala 50:48]
-  wire [18:0] sub_next_1 = sub_next_0 - sub_1; // @[cic_filter.scala 53:60]
-  assign data_out = sub_out; // @[cic_filter.scala 58:22]
+  reg [18:0] sub_0; // @[cic_filter.scala 45:38]
+  reg [18:0] sub_1; // @[cic_filter.scala 45:38]
+  reg [18:0] sub_2; // @[cic_filter.scala 45:38]
+  reg [18:0] sub_out; // @[cic_filter.scala 46:30]
+  wire [18:0] sub_next_0 = sum_out - sub_0; // @[cic_filter.scala 50:44]
+  wire [18:0] sub_next_1 = sub_next_0 - sub_1; // @[cic_filter.scala 53:56]
+  wire [18:0] sub_next_2 = sub_next_1 - sub_2; // @[cic_filter.scala 53:56]
+  assign data_out = sub_out; // @[cic_filter.scala 57:18]
   always @(posedge clk or posedge _T_2) begin
     if (_T_2) begin // @[Counter.scala 120:16]
-      counter_a <= 6'h0; // @[Counter.scala 78:15 88:{20,28}]
+      counter_a <= 6'h0; // @[Counter.scala 78:15]
     end else if (data_en) begin // @[Counter.scala 62:40]
-      if (wrap_wrap) begin
-        counter_a <= 6'h0;
-      end else begin
-        counter_a <= _wrap_value_T_1;
-      end
+      counter_a <= _wrap_value_T_1;
     end
   end
   always @(posedge clk or posedge _T_2) begin
     if (_T_2) begin // @[cic_filter.scala 35:42]
       sum_0 <= 19'h0;
     end else begin
-      sum_0 <= sum_0 + _GEN_3;
+      sum_0 <= sum_0 + _GEN_2;
     end
   end
   always @(posedge clk or posedge _T_2) begin
@@ -64,32 +61,32 @@ module cic_filter_top(
       sum_2 <= sum_1 + sum_2;
     end
   end
-  always @(posedge _T_3 or posedge _T_2) begin
+  always @(posedge clk or posedge _T_2) begin
     if (_T_2) begin // @[cic_filter.scala 40:34]
       sub_0 <= 19'h0;
     end else begin
       sub_0 <= sum_2 + sum_1;
     end
   end
-  always @(posedge _T_3 or posedge _T_2) begin
-    if (_T_2) begin // @[cic_filter.scala 50:48]
+  always @(posedge clk or posedge _T_2) begin
+    if (_T_2) begin // @[cic_filter.scala 50:44]
       sub_1 <= 19'h0;
     end else begin
       sub_1 <= sum_out - sub_0;
     end
   end
-  always @(posedge _T_3 or posedge _T_2) begin
-    if (_T_2) begin // @[cic_filter.scala 53:60]
+  always @(posedge clk or posedge _T_2) begin
+    if (_T_2) begin // @[cic_filter.scala 53:56]
       sub_2 <= 19'h0;
     end else begin
       sub_2 <= sub_next_0 - sub_1;
     end
   end
-  always @(posedge _T_3 or posedge _T_2) begin
-    if (_T_2) begin // @[cic_filter.scala 53:60]
+  always @(posedge clk or posedge _T_2) begin
+    if (_T_2) begin // @[cic_filter.scala 58:23]
       sub_out <= 19'h0;
-    end else begin
-      sub_out <= sub_next_1 - sub_2;
+    end else if (counter_b) begin
+      sub_out <= sub_next_2;
     end
   end
 // Register and memory initialization
